@@ -43,6 +43,7 @@ import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/text_display.d
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/toggle_button.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/toggle_switch.dart';
 import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/voltage_view.dart';
+import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/image_display.dart';
 
 typedef NTModelJsonProvider = NTWidgetModel Function({
   required Map<String, dynamic> jsonData,
@@ -90,6 +91,15 @@ class NTWidgetBuilder {
         model: BooleanBoxModel.new,
         widget: BooleanBox.new,
         fromJson: BooleanBoxModel.fromJson);
+
+    register(
+      name: ImageDisplayWidget.widgetType,
+      model: ImageDisplayModel.new,
+      widget: ImageDisplayWidget.new,
+      fromJson: ImageDisplayModel.fromJson,
+      minWidth: _normalSize * 2,
+      minHeight: _normalSize * 2,
+    );
 
     register(
         name: GraphWidget.widgetType,

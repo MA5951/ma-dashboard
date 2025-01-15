@@ -1429,7 +1429,7 @@ void main() {
   testWidgets('About dialog', (widgetTester) async {
     await pumpDashboardPage(widgetTester, preferences);
 
-    final helpButton = find.widgetWithText(SubmenuButton, 'Help');
+    final helpButton = find.widgetWithText(SubmenuButton, 'help');
 
     expect(helpButton, findsOneWidget);
 

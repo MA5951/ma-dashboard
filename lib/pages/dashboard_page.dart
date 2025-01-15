@@ -835,7 +835,7 @@ class _DashboardPageState extends State<DashboardPage> with WindowListener {
                       ),
                       const SizedBox(width: 5),
                       TextButton.icon(
-                        label: const Text('Help'),
+                        label: const Text('help'),
                         icon: const Icon(Icons.help_outline),
                         onPressed: () {
                           setState(() => showModes = !showModes);
@@ -2008,7 +2008,7 @@ class _DashboardPageState extends State<DashboardPage> with WindowListener {
             child: const Text(
               'Edit',
             )),
-        // Help
+        // help
         SubmenuButton(
           style: menuButtonStyle,
           menuChildren: [
@@ -2045,7 +2045,7 @@ class _DashboardPageState extends State<DashboardPage> with WindowListener {
               ),
           ],
           child: const Text(
-            'Help',
+            'help'
           ),
         ),
         const VerticalDivider(),

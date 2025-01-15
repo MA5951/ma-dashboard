@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/image_display.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -155,6 +156,7 @@ void main() async {
     expect(find.bySubtype<VoltageView>(), findsOneWidget);
     expect(find.bySubtype<NumberBar>(), findsOneWidget);
     expect(find.bySubtype<NumberSlider>(), findsOneWidget);
+    expect(find.bySubtype<ImageDisplayWidget>(), findsOneWidget);
     expect(find.bySubtype<GraphWidget>(), findsOneWidget);
     expect(find.bySubtype<CommandSchedulerWidget>(), findsOneWidget);
     expect(find.bySubtype<CommandWidget>(), findsOneWidget);

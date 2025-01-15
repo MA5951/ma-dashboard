@@ -66,6 +66,7 @@ flutter:
   assets:
     - assets/logos/
     - assets/fields/
+    - assets/images/
 
 import_sorter:
   comments: false

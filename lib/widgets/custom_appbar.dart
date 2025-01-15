@@ -17,7 +17,7 @@ class CustomAppBar extends AppBar {
 
   CustomAppBar({
     super.key,
-    this.titleText = 'Elastic',
+    this.titleText = 'MA Board',
     this.appBarColor,
     this.onWindowClose,
     this.trailing = const [],

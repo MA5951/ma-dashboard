@@ -1,3 +1,4 @@
+import 'package:elastic_dashboard/widgets/nt_widgets/single_topic/image_display.dart';
 import 'package:flutter/material.dart';
 
 import 'package:dot_cast/dot_cast.dart';
@@ -188,6 +189,7 @@ class SingleTopicNTWidgetModel extends NTWidgetModel {
           RadialGaugeWidget.widgetType,
           GraphWidget.widgetType,
           MatchTimeWidget.widgetType,
+          ImageDisplayWidget.widgetType,
         ];
       case NT4TypeStr.kString:
         return [
