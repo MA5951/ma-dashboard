@@ -2139,6 +2139,7 @@ class _DashboardPageState extends State<DashboardPage> with WindowListener {
                 children: [
                   EditableTabBar(
                     preferences: preferences,
+                    ntConnection: widget.ntConnection,
                     gridDpiOverride:
                         preferences.getDouble(PrefKeys.gridDpiOverride),
                     currentIndex: _currentTabIndex,
