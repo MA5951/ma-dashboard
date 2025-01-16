@@ -52,7 +52,10 @@ class EditableTabBar extends StatefulWidget {
 
 class _EditableTabBarState extends State<EditableTabBar> {
   NT4Subscription? colorSubscription;
+
   Color tabBarColor = Colors.grey;
+
+  late Color fallbackColor;
 
   @override
   void initState() {
@@ -60,10 +63,20 @@ class _EditableTabBarState extends State<EditableTabBar> {
     _initializeColorSubscription();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fallbackColor = Theme.of(context).colorScheme.primaryContainer;
+
+    if (tabBarColor == Colors.grey) {
+      tabBarColor = fallbackColor;
+    }
+  }
+
   void _initializeColorSubscription() {
-    colorSubscription = widget.ntConnection.ntClient.subscribe(
-      topic: '/MALog/Dash/TabBarColor',
-      options: const NT4SubscriptionOptions(periodicRateSeconds: 0.1),
+    colorSubscription = widget.ntConnection.subscribe(
+      '/MALog/Dash/TabBarColor',
+      0.06,
     );
 
     colorSubscription?.listen((value, timestamp) {
@@ -73,7 +86,14 @@ class _EditableTabBarState extends State<EditableTabBar> {
           setState(() {
             tabBarColor = Color(colorValue + 0xFF000000);
           });
+          return;
         }
+      }
+
+      if (mounted) {
+        setState(() {
+          tabBarColor = fallbackColor;
+        });
       }
     });
   }
@@ -81,7 +101,7 @@ class _EditableTabBarState extends State<EditableTabBar> {
   @override
   void dispose() {
     if (colorSubscription != null) {
-      widget.ntConnection.ntClient.unSubscribe(colorSubscription!);
+      widget.ntConnection.unSubscribe(colorSubscription!);
     }
     super.dispose();
   }
@@ -128,6 +148,7 @@ class _EditableTabBarState extends State<EditableTabBar> {
   }
 
   void closeTab(int index) {
+    // Only close if there’s more than one tab
     if (widget.tabData.length == 1) {
       return;
     }
@@ -137,6 +158,8 @@ class _EditableTabBarState extends State<EditableTabBar> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
+
+    // Button style for left, add, right (west, add, east) in the upper-right area
     ButtonStyle endButtonStyle = const ButtonStyle(
       shape: WidgetStatePropertyAll(RoundedRectangleBorder()),
       maximumSize: WidgetStatePropertyAll(Size.square(34.0)),
@@ -148,7 +171,7 @@ class _EditableTabBarState extends State<EditableTabBar> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        // Tab bar
+        // The row of tabs at the top
         ExcludeFocus(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
@@ -158,6 +181,7 @@ class _EditableTabBarState extends State<EditableTabBar> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Left side: tabs
                 Flexible(
                   child: ListView.builder(
                     physics: const BouncingScrollPhysics(),
@@ -170,11 +194,12 @@ class _EditableTabBarState extends State<EditableTabBar> {
                           widget.onTabChanged.call(index);
                         },
                         onSecondaryTapUp: (details) {
+                          // If layout is locked, do nothing
                           if (widget.preferences.getBool(PrefKeys.layoutLocked) ??
                               Defaults.layoutLocked) {
                             return;
                           }
-                          // Context menu handling
+                          // Otherwise show a context menu to rename/duplicate/close
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -200,8 +225,14 @@ class _EditableTabBarState extends State<EditableTabBar> {
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeOutExpo,
-                          margin: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 5.0,
+                            vertical: 5.0,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 5.0,
+                          ),
                           decoration: BoxDecoration(
                             color: (widget.currentIndex == index)
                                 ? theme.colorScheme.onPrimaryContainer
@@ -226,6 +257,8 @@ class _EditableTabBarState extends State<EditableTabBar> {
                     },
                   ),
                 ),
+
+                // Right side: move-left, add, move-right
                 Row(
                   children: [
                     IconButton(
@@ -258,22 +291,29 @@ class _EditableTabBarState extends State<EditableTabBar> {
             ),
           ),
         ),
+
+        // The rest of the screen: the tab contents
         Flexible(
           child: PixelRatioOverride(
             dpiOverride: widget.gridDpiOverride,
             child: Stack(
               children: [
+                // Optional grid overlay if "showGrid" is true
                 Visibility(
-                  visible: widget.preferences.getBool(PrefKeys.showGrid) ?? Defaults.showGrid,
+                  visible:
+                      widget.preferences.getBool(PrefKeys.showGrid) ?? Defaults.showGrid,
                   child: GridPaper(
                     color: const Color.fromARGB(50, 195, 232, 243),
-                    interval: (widget.preferences.getInt(PrefKeys.gridSize) ?? Defaults.gridSize)
+                    interval: (widget.preferences.getInt(PrefKeys.gridSize) ??
+                            Defaults.gridSize)
                         .toDouble(),
                     divisions: 1,
                     subdivisions: 1,
                     child: Container(),
                   ),
                 ),
+
+                // The different tabs, displayed as a fade-in/out stack
                 FadeIndexedStack(
                   curve: Curves.decelerate,
                   index: widget.currentIndex,
@@ -288,7 +328,7 @@ class _EditableTabBarState extends State<EditableTabBar> {
               ],
             ),
           ),
-        )
+        ),
       ],
     );
   }
