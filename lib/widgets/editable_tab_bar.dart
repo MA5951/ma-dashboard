@@ -174,7 +174,7 @@ class _EditableTabBarState extends State<EditableTabBar> {
         // The row of tabs at the top
         ExcludeFocus(
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 0),
             color: tabBarColor,
             width: double.infinity,
             height: 36,
